@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import com.stark.parts_storage.mock.MockProcessContext;
+import com.stark.test.MockProcessContext;
 
 import org.junit.Test;
 import org.kie.api.runtime.process.ProcessContext;
