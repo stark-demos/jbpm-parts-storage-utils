@@ -2,6 +2,7 @@ package com.stark.parts_storage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import com.stark.parts_storage.mock.MockProcessContext;
@@ -38,7 +39,7 @@ public class PartsStorageUtilTest {
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": 350}";
         context.setVariable("wsJsonResponse", response);
         PartsStorageUtil.getInventoryAvailable(context);
-        assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
+        assertNull(context.getVariable("partsAvailable"));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class PartsStorageUtilTest {
         context.setVariable("quantity", 50);
         context.setVariable("wsJsonResponse", "FAIL");
         PartsStorageUtil.getInventoryAvailable(context);
-        assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
+        assertNull(context.getVariable("partsAvailable"));
     }
 
     @Test
@@ -64,7 +65,7 @@ public class PartsStorageUtilTest {
     public void testNoResponseGiven() {
         ProcessContext context = new MockProcessContext();
         PartsStorageUtil.getInventoryAvailable(context);
-        assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
+        assertNull(context.getVariable("partsAvailable"));
     }
 
     @Test
