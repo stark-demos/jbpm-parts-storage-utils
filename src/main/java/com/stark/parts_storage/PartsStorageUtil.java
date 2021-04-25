@@ -91,10 +91,11 @@ public class PartsStorageUtil {
             String reservationId = m.group(1);
             context.setVariable("reservationId", reservationId);
             context.setVariable("partsAssigned", Boolean.TRUE);
+            logger.debug("Parts assigned with reservation id {}", reservationId);
         } else {
             logger.debug(
                     "setting inventory available flag with value False (reservationId not found in web service response)");
-            context.setVariable("partsAvailable", Boolean.FALSE);
+            context.setVariable("partsAssigned", Boolean.FALSE);
         }
     }
 
