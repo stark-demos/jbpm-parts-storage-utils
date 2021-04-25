@@ -44,7 +44,9 @@ public class PartsStorageUtil {
                     Integer iAvail = Integer.parseInt(sAvail);
                     Integer requestedQuantiy = (Integer) context.getVariable("quantity");
                     bAvail = iAvail - requestedQuantiy >= 0;
+                    logger.debug("available {}, requested {}", iAvail, requestedQuantiy);
                 } catch(NumberFormatException | ClassCastException e) {
+                    logger.error("Unable to parse amounts", e);
                     bAvail = Boolean.FALSE;
                 }
                 
