@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import com.stark.parts_storage.mock.MockProcessContext;
 
@@ -119,27 +118,49 @@ public class PartsStorageUtilTest {
 
     @Test
     public void testAssignInventoryRequest() {
-        // TODO: Implement test
-        fail("Not implemented yet");
+
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", "ABC-123");
+        context.setVariable("requestQuantity", 1);
+        context.setVariable("repairRequestId", "ABC-123-1");
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
     @Test
     public void testAssignInventoryRequestNullQuantity() {
-        // TODO: Implement test
-        fail("Not implemented yet");
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", "ABC-123");
+        context.setVariable("repairRequestId", "ABC-123-1");
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":null,\"repairRequestId\":\"ABC-123-1\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
     @Test
     public void testAssingInventoryRequestNullPartCode() {
-        // TODO: Implement test
-        fail("Not implemented yet");
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("requestQuantity", 1);
+        context.setVariable("repairRequestId", "ABC-123-1");
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":null,\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
 
     @Test
     public void testAssignInbentoryRequestNullRequestId() {
-        // TODO: Implement test
-        fail("Not implemented yet");
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", "ABC-123");
+        context.setVariable("requestQuantity", 1);
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":null}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
 }

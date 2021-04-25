@@ -51,7 +51,7 @@ public class PartsStorageUtil {
         InventoryReservationRequest oRequest = new InventoryReservationRequest();
         oRequest.setPartCode(partCode);
 
-        Integer requestedQuantiy = (Integer) context.getVariable("quantity");
+        Integer requestedQuantiy = (Integer) context.getVariable("requestQuantity");
         oRequest.setQuantity(requestedQuantiy);
 
         String repairRequestId = (String) context.getVariable("repairRequestId");
