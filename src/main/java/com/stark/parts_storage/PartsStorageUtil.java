@@ -124,9 +124,13 @@ public class PartsStorageUtil {
                 Boolean bAvail = Boolean.FALSE;
                 try {
                     Integer iAvail = Integer.parseInt(sAvail);
-                    Integer requestedQuantiy = (Integer) context.getVariable("quantity");
-                    bAvail = iAvail - requestedQuantiy >= 0;
-                    logger.debug("available {}, requested {}", iAvail, requestedQuantiy);
+                    Integer requestedQuantity = (Integer) context.getVariable("quantity");
+                    if (requestedQuantity == null) {
+                        logger.warn("Requested quantity not found in process instance");
+                        requestedQuantity = 0;
+                    }
+                    bAvail = iAvail - requestedQuantity >= 0;
+                    logger.debug("available {}, requested {}", iAvail, requestedQuantity);
                     logger.debug("setting inventory available flag with value {}", bAvail);
                     context.setVariable("partsAvailable", bAvail);
                 } catch (NumberFormatException | ClassCastException e) {
