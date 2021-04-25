@@ -78,6 +78,23 @@ public class PartsStorageUtilTest {
     }
 
     @Test
+    public void testQueryRequestNullPartCode() {
+        ProcessContext context = new MockProcessContext();
+        PartsStorageUtil.assignJsonQueryRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"null\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
+    }
+
+    @Test
+    public void testQueryRequestNumericPartCode() {
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", 1);
+        PartsStorageUtil.assignJsonQueryRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"1\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
+    }
+
+    @Test
     public void testAssingInventorySuccessStringId() {
         ProcessContext context = new MockProcessContext();
         String response = "{\"reservationId\": \"abc-ABC-123\", \"remainingParts\": 0}";
@@ -153,13 +170,25 @@ public class PartsStorageUtilTest {
 
 
     @Test
-    public void testAssignInbentoryRequestNullRequestId() {
+    public void testAssignInventoryRequestNullRequestId() {
         ProcessContext context = new MockProcessContext();
         context.setVariable("partCode", "ABC-123");
         context.setVariable("quantity", 1);
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
         String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"null\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
+    }
+
+    @Test
+    public void testAssingInventoryRequestIntegerPartCode() {
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", 1);
+        context.setVariable("quantity", 1);
+        context.setVariable("repairRequestId", "ABC-123-1");
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"1\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
