@@ -23,13 +23,13 @@ public class PartsStorageUtil {
         logger.debug("About to assign variable for webService request to process instance {}",
                 context.getProcessInstance().getId());
         String partCode = (String) context.getVariable("partCode");
-        InventoryQueryRequest oResult = new InventoryQueryRequest();
-        oResult.setPartCode(partCode);
+        InventoryQueryRequest oRequest = new InventoryQueryRequest();
+        oRequest.setPartCode(partCode);
 
         ObjectMapper obj = new ObjectMapper();
         String result = "{}";
         try {
-            result = obj.writeValueAsString(oResult);
+            result = obj.writeValueAsString(oRequest);
         } catch (JsonProcessingException e) {
             logger.error("Error while processing Part Info Request", e);
         }
@@ -39,10 +39,69 @@ public class PartsStorageUtil {
     }
 
     /**
+     * Uses the JBPM Process Instance context to assing a JSON request for the web
+     * service project <url here>
+     * 
+     * @param context
+     */
+    public static void jsonQueryRequestForRepairRequest(ProcessContext context) {
+        logger.debug("About to assign variable for webService request to process instance {}",
+                context.getProcessInstance().getId());
+        String partCode = (String) context.getVariable("partCode");
+        InventoryReservationRequest oRequest = new InventoryReservationRequest();
+        oRequest.setPartCode(partCode);
+
+        Integer requestedQuantiy = (Integer) context.getVariable("quantity");
+        oRequest.setQuantity(requestedQuantiy);
+
+        String repairRequestId = (String) context.getVariable("repairRequestId");
+        oRequest.setRepairRequestId(repairRequestId);
+
+        ObjectMapper obj = new ObjectMapper();
+        String result = "{}";
+        try {
+            result = obj.writeValueAsString(oRequest);
+        } catch (JsonProcessingException e) {
+            logger.error("Error while processing Part Info Request", e);
+        }
+
+        context.setVariable("wsJsonRequest", result);
+        logger.debug("Json Request set as {}", result);
+    }
+
+    /**
+     * Given a response from web service <url here>, set the partsAssigned boolean
+     * variable for the given jbpm Process instance kcontext.
+     * 
+     * @param context
+     */
+    public static void getRepairAssignmentResponse(ProcessContext context) {
+        logger.debug("Parsing response from web service to process instance {}", context.getProcessInstance().getId());
+        Pattern p = Pattern.compile("\"reservationId\":\\s*\\\"?([a-zA-Z-\\d]+)\"?");
+
+        String response = (String) context.getVariable("wsJsonResponse");
+        if (response == null) {
+            logger.debug("No response found in kcontext");
+            context.setVariable("partsAssigned", null);
+            return;
+        }
+
+        Matcher m = p.matcher(response);
+        if (m.find()) {
+            String reservationId = m.group(1);
+            context.setVariable("reservationId", reservationId);
+            context.setVariable("partsAssigned", Boolean.TRUE);
+        } else {
+            logger.debug(
+                    "setting inventory available flag with value False (reservationId not found in web service response)");
+            context.setVariable("partsAvailable", Boolean.FALSE);
+        }
+    }
+
+    /**
      * Given a response from web service <url here>, set the partsAvailable boolean
      * variable for the given jbpm Process instance kcontext.
      * 
-     * @param response
      * @param context
      */
     public static void getInventoryAvailable(ProcessContext context) {
@@ -50,9 +109,9 @@ public class PartsStorageUtil {
         Pattern p = Pattern.compile("\"availableQuantity\":\\s*(-?\\d+(\\.\\d+)?)");
 
         String response = (String) context.getVariable("wsJsonResponse");
-        if(response == null) {
+        if (response == null) {
             logger.debug("No response found in kcontext");
-            context.setVariable("partsAvailable", Boolean.FALSE);
+            context.setVariable("partsAvailable", null);
             return;
         }
 
@@ -67,18 +126,17 @@ public class PartsStorageUtil {
                     Integer requestedQuantiy = (Integer) context.getVariable("quantity");
                     bAvail = iAvail - requestedQuantiy >= 0;
                     logger.debug("available {}, requested {}", iAvail, requestedQuantiy);
+                    logger.debug("setting inventory available flag with value {}", bAvail);
+                    context.setVariable("partsAvailable", bAvail);
                 } catch (NumberFormatException | ClassCastException e) {
                     logger.error("Unable to parse amounts", e);
-                    bAvail = Boolean.FALSE;
+                    context.setVariable("partsAvailable", null);
                 }
-
-                logger.debug("setting inventory available flag with value {}", bAvail);
-                context.setVariable("partsAvailable", bAvail);
             }
         } else {
             logger.debug(
                     "setting inventory available flag with value False (availableQuantity not found in web service response)");
-            context.setVariable("partsAvailable", Boolean.FALSE);
+            context.setVariable("partsAvailable", null);
         }
     }
 }
