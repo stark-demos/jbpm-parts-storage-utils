@@ -14,6 +14,7 @@ public class PartsStorageUtil {
     private static Logger logger = LoggerFactory.getLogger(PartsStorageUtil.class);
 
     public static void assignJsonQueryRequest(ProcessContext context) {
+        logger.debug("About to assign variable for webService request to process instance {}", context.getProcessInstance().getId());
         String partCode = (String) context.getVariable("partCode");
         InventoryQueryRequest oResult = new InventoryQueryRequest();
         oResult.setPartCode(partCode);
@@ -27,9 +28,11 @@ public class PartsStorageUtil {
         }
 
         context.setVariable("wsJsonRequest", result);
+        logger.debug("Json Request set as {}", result);
     }
 
     public static void getInventoryAvailable(String response, ProcessContext context) {
+        logger.debug("Parsing response from web service to process instance {}", context.getProcessInstance().getId());
         Pattern p = Pattern.compile("\"availableQuantity\":\\s*(-?\\d+(\\.\\d+)?)");
         Matcher m = p.matcher(response);
         if(m.find()) {
@@ -45,9 +48,11 @@ public class PartsStorageUtil {
                     bAvail = Boolean.FALSE;
                 }
                 
+                logger.debug("setting inventory available flag with value {}", bAvail);
                 context.setVariable("partsAvailable", bAvail);
             }
         } else {
+            logger.debug("setting inventory available flag with value False (availableQuantity not found in web service response)");
             context.setVariable("partsAvailable", Boolean.FALSE);
         }
     }
