@@ -22,7 +22,7 @@ public class PartsStorageUtil {
     public static void assignJsonQueryRequest(ProcessContext context) {
         logger.debug("About to assign variable for webService request to process instance {}",
                 context.getProcessInstance().getId());
-        String partCode = (String) context.getVariable("partCode");
+        String partCode = String.valueOf(context.getVariable("partCode"));
         InventoryQueryRequest oRequest = new InventoryQueryRequest();
         oRequest.setPartCode(partCode);
 
@@ -47,14 +47,14 @@ public class PartsStorageUtil {
     public static void jsonQueryRequestForRepairRequest(ProcessContext context) {
         logger.debug("About to assign variable for webService request to process instance {}",
                 context.getProcessInstance().getId());
-        String partCode = (String) context.getVariable("partCode");
+        String partCode = String.valueOf(context.getVariable("partCode"));
         InventoryReservationRequest oRequest = new InventoryReservationRequest();
         oRequest.setPartCode(partCode);
 
         Integer requestedQuantiy = (Integer) context.getVariable("quantity");
         oRequest.setQuantity(requestedQuantiy);
 
-        String repairRequestId = (String) context.getVariable("repairRequestId");
+        String repairRequestId = String.valueOf(context.getVariable("repairRequestId"));
         oRequest.setRepairRequestId(repairRequestId);
 
         ObjectMapper obj = new ObjectMapper();

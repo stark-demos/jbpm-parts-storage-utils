@@ -147,7 +147,7 @@ public class PartsStorageUtilTest {
         context.setVariable("repairRequestId", "ABC-123-1");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":null,\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
+        String wsJsonRequest = "{\"partCode\":\"null\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
@@ -159,7 +159,7 @@ public class PartsStorageUtilTest {
         context.setVariable("quantity", 1);
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":null}";
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"null\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
