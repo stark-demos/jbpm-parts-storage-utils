@@ -121,7 +121,7 @@ public class PartsStorageUtilTest {
 
         ProcessContext context = new MockProcessContext();
         context.setVariable("partCode", "ABC-123");
-        context.setVariable("requestQuantity", 1);
+        context.setVariable("quantity", 1);
         context.setVariable("repairRequestId", "ABC-123-1");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
@@ -143,7 +143,7 @@ public class PartsStorageUtilTest {
     @Test
     public void testAssingInventoryRequestNullPartCode() {
         ProcessContext context = new MockProcessContext();
-        context.setVariable("requestQuantity", 1);
+        context.setVariable("quantity", 1);
         context.setVariable("repairRequestId", "ABC-123-1");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
@@ -156,7 +156,7 @@ public class PartsStorageUtilTest {
     public void testAssignInbentoryRequestNullRequestId() {
         ProcessContext context = new MockProcessContext();
         context.setVariable("partCode", "ABC-123");
-        context.setVariable("requestQuantity", 1);
+        context.setVariable("quantity", 1);
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
         String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":null}";
