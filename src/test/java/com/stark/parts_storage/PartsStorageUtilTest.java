@@ -13,7 +13,7 @@ import org.kie.api.runtime.process.ProcessContext;
 public class PartsStorageUtilTest {
 
     @Test
-    public void testGetInventorySuccess(){
+    public void testGetInventorySuccess() {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 50);
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": 350}";
@@ -52,7 +52,7 @@ public class PartsStorageUtilTest {
     }
 
     @Test
-    public void testNegativeInventory(){
+    public void testNegativeInventory() {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 50);
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": -50}";
@@ -127,7 +127,7 @@ public class PartsStorageUtilTest {
     @Test
     public void testAssignInventoryNoResponseGiven() {
         ProcessContext context = new MockProcessContext();
-        
+
         PartsStorageUtil.getRepairAssignmentResponse(context);
         assertNull(context.getVariable("partsAssigned"));
         assertNull(context.getVariable("reservationId"));
@@ -167,7 +167,6 @@ public class PartsStorageUtilTest {
         String wsJsonRequest = "{\"partCode\":\"null\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
-
 
     @Test
     public void testAssignInventoryRequestNullRequestId() {
