@@ -13,8 +13,15 @@ import org.slf4j.LoggerFactory;
 public class PartsStorageUtil {
     private static Logger logger = LoggerFactory.getLogger(PartsStorageUtil.class);
 
+    /**
+     * Uses the JBPM Process Instance context to assing a JSON request for the web
+     * service project: <url here>
+     * 
+     * @param context
+     */
     public static void assignJsonQueryRequest(ProcessContext context) {
-        logger.debug("About to assign variable for webService request to process instance {}", context.getProcessInstance().getId());
+        logger.debug("About to assign variable for webService request to process instance {}",
+                context.getProcessInstance().getId());
         String partCode = (String) context.getVariable("partCode");
         InventoryQueryRequest oResult = new InventoryQueryRequest();
         oResult.setPartCode(partCode);
@@ -31,30 +38,46 @@ public class PartsStorageUtil {
         logger.debug("Json Request set as {}", result);
     }
 
-    public static void getInventoryAvailable(String response, ProcessContext context) {
+    /**
+     * Given a response from web service <url here>, set the partsAvailable boolean
+     * variable for the given jbpm Process instance kcontext.
+     * 
+     * @param response
+     * @param context
+     */
+    public static void getInventoryAvailable(ProcessContext context) {
         logger.debug("Parsing response from web service to process instance {}", context.getProcessInstance().getId());
         Pattern p = Pattern.compile("\"availableQuantity\":\\s*(-?\\d+(\\.\\d+)?)");
+
+        String response = (String) context.getVariable("wsJsonResponse");
+        if(response == null) {
+            logger.debug("No response found in kcontext");
+            context.setVariable("partsAvailable", Boolean.FALSE);
+            return;
+        }
+
         Matcher m = p.matcher(response);
-        if(m.find()) {
+        if (m.find()) {
             String sAvail = m.group(1);
-            if(sAvail != null) {
-                
+            if (sAvail != null) {
+
                 Boolean bAvail = Boolean.FALSE;
                 try {
                     Integer iAvail = Integer.parseInt(sAvail);
                     Integer requestedQuantiy = (Integer) context.getVariable("quantity");
                     bAvail = iAvail - requestedQuantiy >= 0;
                     logger.debug("available {}, requested {}", iAvail, requestedQuantiy);
-                } catch(NumberFormatException | ClassCastException e) {
+                } catch (NumberFormatException | ClassCastException e) {
                     logger.error("Unable to parse amounts", e);
                     bAvail = Boolean.FALSE;
                 }
-                
+
                 logger.debug("setting inventory available flag with value {}", bAvail);
                 context.setVariable("partsAvailable", bAvail);
             }
         } else {
-            logger.debug("setting inventory available flag with value False (availableQuantity not found in web service response)");
+            logger.debug(
+                    "setting inventory available flag with value False (availableQuantity not found in web service response)");
             context.setVariable("partsAvailable", Boolean.FALSE);
         }
     }

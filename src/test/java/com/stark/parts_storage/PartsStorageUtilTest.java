@@ -16,7 +16,8 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 50);
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": 350}";
-        PartsStorageUtil.getInventoryAvailable(response, context);
+        context.setVariable("wsJsonResponse", response);
+        PartsStorageUtil.getInventoryAvailable(context);
         assertTrue("Should have parts available", (Boolean) context.getVariable("partsAvailable"));
     }
 
@@ -25,7 +26,8 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 700);
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": 350}";
-        PartsStorageUtil.getInventoryAvailable(response, context);
+        context.setVariable("wsJsonResponse", response);
+        PartsStorageUtil.getInventoryAvailable(context);
         assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
     }
 
@@ -34,7 +36,8 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", "FAIL");
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": 350}";
-        PartsStorageUtil.getInventoryAvailable(response, context);
+        context.setVariable("wsJsonResponse", response);
+        PartsStorageUtil.getInventoryAvailable(context);
         assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
     }
 
@@ -42,8 +45,8 @@ public class PartsStorageUtilTest {
     public void testNotAppropriateResponseGiven() {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 50);
-        String response = "FAIL";
-        PartsStorageUtil.getInventoryAvailable(response, context);
+        context.setVariable("wsJsonResponse", "FAIL");
+        PartsStorageUtil.getInventoryAvailable(context);
         assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
     }
 
@@ -52,7 +55,15 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 50);
         String response = "{\"partCode\": \"abc-ABC-123\", \"availableQuantity\": -50}";
-        PartsStorageUtil.getInventoryAvailable(response, context);
+        context.setVariable("wsJsonResponse", response);
+        PartsStorageUtil.getInventoryAvailable(context);
+        assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
+    }
+
+    @Test
+    public void testNoResponseGiven() {
+        ProcessContext context = new MockProcessContext();
+        PartsStorageUtil.getInventoryAvailable(context);
         assertFalse("Should not have parts available", (Boolean) context.getVariable("partsAvailable"));
     }
 
