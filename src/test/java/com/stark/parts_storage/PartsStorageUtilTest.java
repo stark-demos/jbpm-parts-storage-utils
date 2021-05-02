@@ -140,9 +140,10 @@ public class PartsStorageUtilTest {
         context.setVariable("partCode", "ABC-123");
         context.setVariable("quantity", 1);
         context.setVariable("repairRequestId", "ABC-123-1");
+        context.setVariable("branchCode", "ABC-456-a");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\",\"branchCode\":\"ABC-456-a\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
@@ -151,9 +152,10 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("partCode", "ABC-123");
         context.setVariable("repairRequestId", "ABC-123-1");
+        context.setVariable("branchCode", "ABC-456-a");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":null,\"repairRequestId\":\"ABC-123-1\"}";
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":null,\"repairRequestId\":\"ABC-123-1\",\"branchCode\":\"ABC-456-a\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
@@ -162,9 +164,10 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("quantity", 1);
         context.setVariable("repairRequestId", "ABC-123-1");
+        context.setVariable("branchCode", "ABC-456-a");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":\"null\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
+        String wsJsonRequest = "{\"partCode\":\"null\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\",\"branchCode\":\"ABC-456-a\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
@@ -173,9 +176,10 @@ public class PartsStorageUtilTest {
         ProcessContext context = new MockProcessContext();
         context.setVariable("partCode", "ABC-123");
         context.setVariable("quantity", 1);
+        context.setVariable("branchCode", "ABC-456-a");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"null\"}";
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"null\",\"branchCode\":\"ABC-456-a\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 
@@ -185,9 +189,37 @@ public class PartsStorageUtilTest {
         context.setVariable("partCode", 1);
         context.setVariable("quantity", 1);
         context.setVariable("repairRequestId", "ABC-123-1");
+        context.setVariable("branchCode", "ABC-456-a");
 
         PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
-        String wsJsonRequest = "{\"partCode\":\"1\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\"}";
+        String wsJsonRequest = "{\"partCode\":\"1\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\",\"branchCode\":\"ABC-456-a\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
+    }
+
+    @Test
+    public void testAssignInventoryRequestNullBranchCode() {
+
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", "ABC-123");
+        context.setVariable("quantity", 1);
+        context.setVariable("repairRequestId", "ABC-123-1");
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\",\"branchCode\":\"null\"}";
+        assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
+    }
+
+    @Test
+    public void testAssignInventoryRequestIntegerBranchCode() {
+
+        ProcessContext context = new MockProcessContext();
+        context.setVariable("partCode", "ABC-123");
+        context.setVariable("quantity", 1);
+        context.setVariable("repairRequestId", "ABC-123-1");
+        context.setVariable("branchCode", 1);
+
+        PartsStorageUtil.jsonQueryRequestForRepairRequest(context);
+        String wsJsonRequest = "{\"partCode\":\"ABC-123\",\"quantity\":1,\"repairRequestId\":\"ABC-123-1\",\"branchCode\":\"1\"}";
         assertEquals(wsJsonRequest, context.getVariable("wsJsonRequest"));
     }
 

@@ -51,6 +51,9 @@ public class PartsStorageUtil {
         InventoryReservationRequest oRequest = new InventoryReservationRequest();
         oRequest.setPartCode(partCode);
 
+        String branchCode = String.valueOf(context.getVariable("branchCode"));
+        oRequest.setBranchCode(branchCode);
+
         Integer requestedQuantiy = (Integer) context.getVariable("quantity");
         oRequest.setQuantity(requestedQuantiy);
 
